@@ -1,3 +1,7 @@
+#!/bin/bash 
+
+set -e
+
 owner=$(git config remote.origin.url | sed -n 's/.*:\(.*\)\/.*/\1/p')
 repo=$(git config remote.origin.url | sed -n 's/.*\/\(.*\)\.git/\1/p')
 version=$1
@@ -36,7 +40,10 @@ Are you sure you want to continue [y/n]? " agreed
   git push
   git push --tags
 
-  open https://github.com/${owner}/${repo}/releases/new?tag=$tag
+  new_repo=https://github.com/${owner}/${repo}/releases/new?tag=$tag
+  open $new_repo
+
+  printf "\nNow publish new release on Github! $new_repo\n"
 }
 
 run $version

@@ -1,6 +1,7 @@
-owner="pawel-gawel"
+owner=$(git config remote.origin.url | sed -n 's/.*:\(.*\)\/.*/\1/p') # "pawel-gawel"
 user=$owner
-repo="test-utils"
+repo=$(git config remote.origin.url | sed -n 's/.*\/\(.*\)\.git/\1/p') # "test-utils"
+version=$1
 
 while getopts ":hvf" o; do
   case "${o}" in
@@ -67,4 +68,4 @@ delete() {
   https://api.github.com/repos/${owner}/${repo}/releases/$release_id
 }
 
-run $@
+run $version

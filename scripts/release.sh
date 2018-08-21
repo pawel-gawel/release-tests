@@ -6,8 +6,6 @@ owner=$(git config remote.origin.url | sed -n 's/.*:\(.*\)\/.*/\1/p')
 repo=$(git config remote.origin.url | sed -n 's/.*\/\(.*\)\.git/\1/p')
 version=$1
 
-echo $version 
-
 run() {
   if [[ ! $version =~ ^(patch|minor|major)$ ]]; then
     printf "\nInvalid version passed as a positional param, possible values are: patch, minor, major\n\n"
@@ -25,7 +23,7 @@ Are you sure you want to continue [y/n]? " agreed
   tag=$(npm version $1)
   
   git push
-  git push --tags
+  git push origin $tag
 
   new_repo=https://github.com/${owner}/${repo}/releases/new?tag=$tag
   

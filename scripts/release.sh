@@ -6,33 +6,20 @@ owner=$(git config remote.origin.url | sed -n 's/.*:\(.*\)\/.*/\1/p')
 repo=$(git config remote.origin.url | sed -n 's/.*\/\(.*\)\.git/\1/p')
 version=$1
 
-while getopts ":hvf" o; do
-  case "${o}" in
-    h)
-      usage
-      ;;
-    v)
-      set -x
-      ;;
-    f)
-      force=true
-      ;;
-    \?)
-      printf "\n\tInvalid option: -$OPTARG\n\n" >&2; usage
-      ;;
-  esac
-done
-shift $((OPTIND-1))
+echo $version 
 
 run() {
-  if [ -z $force ]; then
-    printf "\n"
-    read -p "This will npm version the repo, push the new commit and tag to Github and then go to new release page.
+  if [[ ! $version =~ ^(patch|minor|major)$ ]]; then
+    printf "\nInvalid version passed as a positional param, possible values are: patch, minor, major\n\n"
+    exit 1
+  fi
+
+  printf "\n"
+  read -p "This will npm version the repo, push the new commit and tag to Github and then go to new release page.
 
 Are you sure you want to continue [y/n]? " agreed
-    if [ "$agreed" != "y" ]; then
-      printf "\n\tbye!\n\n"; exit
-    fi
+  if [ "$agreed" != "y" ]; then
+    printf "\n\tbye!\n\n"; exit
   fi
 
   tag=$(npm version $1)
@@ -41,9 +28,10 @@ Are you sure you want to continue [y/n]? " agreed
   git push --tags
 
   new_repo=https://github.com/${owner}/${repo}/releases/new?tag=$tag
-  open $new_repo
+  
+  printf "\nNow publish new release on Github! $new_repo\n\n"
 
-  printf "\nNow publish new release on Github! $new_repo\n"
+  open $new_repo
 }
 
 run $version

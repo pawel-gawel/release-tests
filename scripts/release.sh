@@ -21,7 +21,7 @@ Are you sure you want to continue [y/n]? " agreed
   fi
 
   tag=$(npm version $1)
-  tag=$(echo $tag | sed -n s/v(.*)/\1/p)
+  tag=$(echo $tag | sed -n s/v\(.*\)/\1/p)
   
   git push
   git push origin $tag
